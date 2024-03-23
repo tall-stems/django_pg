@@ -90,9 +90,6 @@ DATABASES = {
 }
 
 # Login
-# Test user:
-#  username: test_user
-#  password: easy_password
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/logout'
 
