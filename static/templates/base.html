@@ -1,0 +1,77 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{% static 'styles/main.css' %}"
+    />
+    {% block head %} {% endblock %}
+  </head>
+  <body>
+    <nav
+      class="navbar is-primary"
+      role="navigation"
+      aria-label="main navigation"
+    >
+      <div class="navbar-brand">
+        <a class="navbar-item" href="{% url 'home:home' %}">
+          <img
+            src="{% static 'images/logo.webp' %}"
+            alt="Logo"
+            style="width: 4.3125em; height: auto; max-height: 300px; max-width: 300px"
+          />
+        </a>
+        <a
+          role="button"
+          class="navbar-burger"
+          aria-label="menu"
+          aria-expanded="false"
+          data-target="navbarMenu"
+        >
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
+      </div>
+      <div id="navbarMenu" class="navbar-menu">
+        <div class="navbar-start">
+          <a class="navbar-item" href="{% url 'home:home' %}"> Home </a>
+          <a class="navbar-item" href="{% url 'notes:list' %}"> Notes </a>
+          <a class="navbar-item" href="{% url 'notes:create' %}"> Create Note </a>
+          {% comment %} <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link"> More </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="{% url 'home:home' %}"> TBD </a>
+            </div>
+          </div> {% endcomment %}
+        </div>
+        <div class="navbar-end">
+          <div class="navbar-item">
+            <div class="buttons">
+              {% if user.is_authenticated %}
+              <form method="POST" action="{% url 'home:logout' %}">
+                {% csrf_token %}
+                <button type="submit" class="button">Logout</button>
+              </form>
+              {% else %}
+              <a class="button" href="{% url 'home:login' %}">Login</a>
+              <a class="button" href="{% url 'home:signup' %}">Sign Up</a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+    <section class="section pt-4">
+      <div class="container">{% block body %} {% endblock %}</div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+.django-form {
+    input {
+        display: block;
+    }
+}
+.note-li {
+  a {
+    color: #e44414;
+    &:hover {
+      color: #a214e4;
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{% extends "base.html" %} {% block head %}
+<title>Django Playground</title>
+{% endblock %} {% block body %}
+<div class="content has-text-centered">
+  <h1>Welcome to my Django Playground!</h1>
+  <p>
+    Here you can find some of my Django projects including some from tutorials
+    and some just because.
+  </p>
+  <p>Feel free to explore and have fun!</p>
+  <h3>Info about today:</h3>
+  <p>{{ today }}</p>
+  <div class="container has-left-text w-full is-flex is-justify-content-center">
+  <div class="box is-flex is-flex-direction-column is-align-items-center">
+    <h3>Index of Projects:</h3>
+    <ul class="mt-0 has-text-left">
+      <li class="note-li">
+        <a href="{% url 'notes:list' %}">Notes</a>
+      </li>
+    </ul>
+  </div>
+</div>
+  {% endblock %}
+</div>
