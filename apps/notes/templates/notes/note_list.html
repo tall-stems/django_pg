@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block head %}
+    <title>All Notes</title>
+{% endblock %}
+{% block body %}
+<div class="content is-flex is-flex-direction-column is-align-items-center">
+    <h1>All Notes</h1>
+    <ul class="mt-0 has-text-left" data-notescount={{notes|length}}>
+    {% for note in notes %}
+        <li class="note-li" data-index={{ forloop.counter }}>
+            <a href="{% url 'notes:detail' pk=note.id %}">{{ note.title | truncatechars:100 }}</a>
+        </li>
+    {% endfor %}
+    </ul>
+    <a href="{% url 'notes:create' %}" class="button">Create New Note</a>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block head %}
+<title>Note Detail</title>
+{% endblock %} {% block body %}
+<div class="container is-flex is-flex-direction-column is-align-items-center">
+  <div class="content">
+    <h1 class="has-text-centered">{{note.title}}</h1>
+    <p>{{note.text}}</p>
+  </div>
+  <div class="buttons">
+    <a class="button mb-4 is-responsive" href="{% url 'notes:update' pk=note.id %}">Edit</a>
+    <a class="button mb-4 is-responsive" href="{% url 'notes:delete' pk=note.id %}">Delete</a>
+  </div>
+</div>
+{% endblock %}
