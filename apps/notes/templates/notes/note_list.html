@@ -7,8 +7,8 @@
     <h1>All Notes</h1>
     <ul class="mt-0 has-text-left" data-notescount={{notes|length}}>
     {% for note in notes %}
-        <li class="note-li" data-index={{ forloop.counter }}>
-            <a href="{% url 'notes:detail' pk=note.id %}">{{ note.title | truncatechars:100 }}</a>
+        <li class="note-li is-flex is-align-items-center" data-index={{ forloop.counter }}>
+            <label class="checkbox mr-2"><input disabled type="checkbox" id="note_completed_{{ note.id }}" {% if note.completed %} checked {% endif %}></label><a href="{% url 'notes:detail' pk=note.id %}">{{ note.title | truncatechars:100 }}</a>
         </li>
     {% endfor %}
     </ul>

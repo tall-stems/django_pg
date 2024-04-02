@@ -5,12 +5,14 @@ from .models import Note
 class NoteForm(forms.ModelForm):
     class Meta:
         model = Note
-        fields = ['title', 'text']
+        fields = ['completed', 'title', 'text']
         widgets = {
+            'completed': forms.CheckboxInput(attrs={'class': 'checkbox mb-2'}),
             'title': forms.TextInput(attrs={'class': 'input mb-2'}),
             'text': forms.Textarea(attrs={'class': 'textarea mb-2'}),
         }
         labels = {
+            'completed': 'Completed',
             'title': 'Title',
             'text': 'Write note here'
         }

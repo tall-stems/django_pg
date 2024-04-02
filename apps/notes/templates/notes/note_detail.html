@@ -4,6 +4,10 @@
 <div class="container is-flex is-flex-direction-column is-align-items-center">
   <div class="content">
     <h1 class="has-text-centered">{{note.title}}</h1>
+    <label class="checkbox">
+      <input type="checkbox" {% if note.completed %} checked {% endif %} disabled>
+    </label>
+    <p>Is completed: {{note.completed|yesno:"Yes,No"}}</p>
     <p>{{note.text}}</p>
   </div>
   <div class="buttons">

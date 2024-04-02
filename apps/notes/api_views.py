@@ -16,7 +16,7 @@ class NotesListAPIView(ListAPIView):
     queryset = Note.objects.all()
     serializer_class = NoteSerializer
     filter_backends = (DjangoFilterBackend, SearchFilter)
-    filterset_fields = ('id',)
+    filterset_fields = ('id', 'completed')
     search_fields = ('title', 'text')
     pagination_class = NotesPagination
 
