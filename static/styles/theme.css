@@ -1,0 +1,46 @@
+:root {
+    /* Theme Names */
+    --dark: #333334;
+    --primary: #32a0ea;
+    --secondary: #fdeac0;
+    --accent: #d8b646;
+    --background: #dddddd;
+
+    /* Color Names */
+    --jet: #333334;
+    --celestial-blue: #32a0ea;
+    --peach: #fdeac0;
+    --gold-metallic: #d8b646;
+    --platinum: #dddddd;
+
+    /* Basic Colors */
+    --black: #020216;
+    --white: #faf9f6;
+
+    /* Status Colors */
+    --error: #e44414;
+    --warning: #f5a623;
+    --success: #4caf50;
+    --info: var(--primary);
+
+    /* Fonts */
+    --title-font: 'Roboto', sans-serif;
+    --body-font: 'Lato', sans-serif;
+}
+
+/* Typography */
+body {
+    font-family: var(--body-font);
+    color: var(--jet);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--title-font);
+    color: var(--jet);
+    font-weight: 600;
+}

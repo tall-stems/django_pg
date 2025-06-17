@@ -1,11 +1,46 @@
-.django-form {
-    input {
-        display: block;
-    }
+@import './theme.css';
+
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+  @media screen and (min-width: 768px) {
+    flex-wrap: nowrap;
+  }
 }
+
+.section {
+  padding-top: 7rem;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
+
+  &:hover {
+    color: var(--accent);
+  }
+}
+
+.django-form {
+  input {
+    display: block;
+  }
+}
+
 .note-li {
   a {
     color: #e44414;
+
     &:hover {
       color: #a214e4;
     }

@@ -1,0 +1,103 @@
+/* Base CSS
+ * This is a set of CSS rules that I use as a foundation for all my projects.
+ * It includes basic resets, typography, and other common styles.
+ * Includes many "reset" type styles but may grow to include some default preferences as well.
+ *
+ * Initially inspired by this blog post: https://www.joshwcomeau.com/css/custom-css-reset/
+ */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0 none;
+}
+
+/* Enable keyword animations
+ * Allows for smooth transitions and animations when going between absolute sizes and relative
+ * sizes e.g. from 0px to auto for height.
+ * Not available in ALL browsers but the fallback is just to snap open which I'm ok with.
+ */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        interpolate-size: allow-keywords;
+    }
+}
+
+body {
+    /* Recommended line height for accessibility is 1.5
+     * I'll change the header spacing in my theme based css since this is specifically for
+     * body text.
+     */
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Easier media defaults
+ * When doing "oversized" items, make sure to revert the max-width via 'max-width: revert'
+ */
+img,
+picture,
+video,
+canvas,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+/* Inherit fonts for form controls so they aren't the initial weird small defaults */
+input,
+button,
+textarea,
+select {
+    font: inherit;
+}
+
+/* Avoid text overflows */
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    overflow-wrap: break-word;
+}
+
+/* Improve line wrapping. Prevents single word last lines. */
+p {
+    text-wrap: pretty;
+}
+
+/* Make headers try to match the width of each line of text if broken into multiple lines.
+ * Might not always be what I want but it is easy to revert if not.
+ */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    text-wrap: balance;
+}
+
+/* Table styles and resets */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* Create a root stacking context
+ * This is to prevent z-index issues with the root element.
+ * See https://developer.mozilla.org/en-US/docs/Web/CSS/isolation
+*/
+#root,
+#__next {
+    isolation: isolate;
+}

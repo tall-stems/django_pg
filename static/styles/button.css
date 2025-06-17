@@ -1,0 +1,20 @@
+@import './theme.css';
+
+.button {
+    display: inline-block;
+    padding: 0.5em 1em;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+    background-color: var(--primary);
+    border: none;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    &:hover {
+        color: var(--black);
+        background-color: var(--accent);
+    }
+}
