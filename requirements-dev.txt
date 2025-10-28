@@ -1,0 +1,16 @@
+# Development and Testing Dependencies
+# Install with: pip install -r requirements-dev.txt
+
+# Use production requirements as base
+-r requirements.txt
+
+# Minimal dev deps for now (only what you asked for)
+# Monitoring & health checks used by tasks
+psutil==6.1.1
+
+# Testing tools (moved from requirements.txt)
+pytest==8.4.2
+pytest-django==4.11.1
+pytest-cov==7.0.0
+factory-boy==3.3.3
+Faker==37.12.0

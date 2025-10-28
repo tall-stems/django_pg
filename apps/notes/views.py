@@ -1,11 +1,9 @@
-from django.shortcuts import render
-from django.http import Http404, HttpResponseRedirect
+from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, ListView, DetailView, UpdateView
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .forms import NoteForm
-
 from .models import Note
 
 class NoteDeleteView(DeleteView):
@@ -18,15 +16,24 @@ class NoteUpdateView(UpdateView):
     form_class = NoteForm
     success_url = '/notes/'
 
+    def form_valid(self, form):
+        """Override to handle note update."""
+        response = super().form_valid(form)
+        # Could add notification task here if needed
+        return response
+
 class NoteCreateView(CreateView):
     model = Note
     form_class = NoteForm
     success_url = '/notes/'
 
     def form_valid(self, form):
+        """Override to set the user on note creation."""
         self.object = form.save(commit=False)
         self.object.user = self.request.user
         self.object.save()
+
+        # Note created - could add notification task here if needed
         return HttpResponseRedirect(self.get_success_url())
 
 

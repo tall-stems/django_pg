@@ -1,0 +1,87 @@
+version: '3.8'
+
+services:
+  # Dockerized Django web service
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  # PostgreSQL database
+  db:
+    image: postgres:15-alpine
+    container_name: playground_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+    # TODO: figure out how to change username and password in a secure way
+      - POSTGRES_DB=playground_db
+      - POSTGRES_USER=playground_user
+      - POSTGRES_PASSWORD=playground_pass
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U playground_user -d playground_db"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Redis service for Celery broker and result backend
+  redis:
+    image: redis:7-alpine
+    container_name: playground_redis
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # Celery worker (optional - can also run with management command)
+  celery-worker:
+    build: .
+    container_name: playground_celery_worker
+    command: celery -A playground worker --loglevel=info
+    volumes:
+      - .:/app
+    env_file:
+      - .env.docker
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    profiles:
+      - celery # Only start with: docker compose --profile celery up
+
+  # Optional: Redis Commander for Redis GUI
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: playground_redis_commander
+    hostname: redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+    profiles:
+      - tools # Only start with --profile tools
+
+volumes:
+  postgres_data:
+  redis_data:

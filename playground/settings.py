@@ -11,11 +11,16 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 import os
 import sys
-
+import dj_database_url
+from dotenv import load_dotenv
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env file
+load_dotenv(BASE_DIR / '.env')
+
 APPS_DIR = os.path.join(BASE_DIR, 'apps/')
 sys.path.insert(0, APPS_DIR)
 
@@ -23,16 +28,14 @@ sys.path.insert(0, APPS_DIR)
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-7!sq0sduet=pb#kd$sx)c75^v63c4)@4)3b+-5zgo7iqvjok8('
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-7!sq0sduet=pb#kd$sx)c75^v63c4)@4)3b+-5zgo7iqvjok8(')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '').split(',') if os.getenv('ALLOWED_HOSTS') else []
 
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5173',
-]
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:5173').split(',')
 # Application definition
 
 INSTALLED_APPS = [
@@ -48,6 +51,7 @@ INSTALLED_APPS = [
     # apps
     'home',
     'notes',
+    'tasks',
     'corsheaders',
 ]
 
@@ -61,6 +65,21 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+# Security Settings
+# =================
+# HTTPS Settings (disabled for local development, enable in production)
+SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'False') == 'True'
+SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'False') == 'True'
+CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'False') == 'True'
+SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'False') == 'True'
+SECURE_HSTS_PRELOAD = os.getenv('SECURE_HSTS_PRELOAD', 'False') == 'True'
+
+# Content Security (always enabled)
+# SAMEORIGIN = Allow iframes from same domain, DENY = No iframes at all
+X_FRAME_OPTIONS = 'SAMEORIGIN'  # Changed from DENY for flexibility
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME-type sniffing attacks
 
 ROOT_URLCONF = 'playground.urls'
 
@@ -88,11 +107,13 @@ WSGI_APPLICATION = 'playground.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# Use DATABASE_URL if available (Docker), otherwise use SQLite (local)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 # Redis cache configuration
@@ -103,11 +124,11 @@ CACHES = {
     },
     'redis': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/',  # Replace with your Redis server info
+        'LOCATION': os.getenv('CELERY_RESULT_BACKEND', 'redis://127.0.0.1:6380/0'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
-    }
+    },
 }
 
 # Use the Redis cache as the default cache
@@ -160,6 +181,61 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Celery configuration
-CELERY_BROKER_URL = "redis://localhost:6379"
-CELERY_RESULT_BACKEND = "redis://localhost:6379"
+# Celery task autodiscovery
+CELERY_IMPORTS = (
+    'tasks.tasks',  # Our simplified tasks
+)
+
+# Task execution settings
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_ENABLE_UTC = True
+
+# Task routing and execution
+CELERY_TASK_ALWAYS_EAGER = False  # Set to True for testing to run tasks synchronously
+CELERY_TASK_EAGER_PROPAGATES = True
+CELERY_TASK_IGNORE_RESULT = False
+CELERY_TASK_STORE_EAGER_RESULT = True
+
+# Worker settings
+CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_WORKER_MAX_TASKS_PER_CHILD = 1000
+
+# Task result expiration
+CELERY_RESULT_EXPIRES = 3600  # 1 hour
+
+# Task retry settings
+CELERY_TASK_SOFT_TIME_LIMIT = 300  # 5 minutes
+CELERY_TASK_TIME_LIMIT = 600       # 10 minutes
+CELERY_TASK_MAX_RETRIES = 3
+
+# Celery Beat Schedule (Periodic Tasks)
+# ====================================
+# Disabled - using simplified Celery setup
+# Re-enable when you need scheduled tasks
+# from celery.schedules import crontab
+#
+# CELERY_BEAT_SCHEDULE = {
+#     'cleanup-old-data': {
+#         'task': 'tasks.tasks.delete_completed_notes',
+#         'schedule': crontab(hour=2, minute=0),
+#     },
+# }
+
+# Progress tracking
+INSTALLED_APPS += ['celery_progress']
+
+# Admin email settings
+ADMINS = [
+    ('Admin', os.getenv('ADMIN_EMAIL', 'admin@playground.com')),
+]
+
+# File upload settings for image processing
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+# File size limits (5MB for images)
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5 * 1024 * 1024
+DATA_UPLOAD_MAX_MEMORY_SIZE = FILE_UPLOAD_MAX_MEMORY_SIZE
