@@ -50,3 +50,6 @@ class NoteDetailView(DetailView):
     model = Note
     template_name = 'notes/note_detail.html'
     context_object_name = 'note'
+
+    def get_queryset(self):
+        return self.request.user.notes.all()
