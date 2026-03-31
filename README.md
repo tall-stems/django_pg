@@ -31,8 +31,7 @@ python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 2. Install dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt  # For running tests
+pip install -r requirements-dev.txt
 
 # 3. Copy environment file
 cp .env.example .env
