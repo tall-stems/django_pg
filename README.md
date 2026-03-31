@@ -32,6 +32,7 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
+pip install -r requirements-dev.txt  # For running tests
 
 # 3. Copy environment file
 cp .env.example .env
@@ -54,8 +55,8 @@ Visit http://localhost:8000
 ### Docker Development
 
 ```bash
-# 1. Copy environment file
-cp .env.example .env
+# 1. Copy environment file (Docker uses .env.docker, not .env)
+cp .env.example .env.docker
 
 # 2. Start all services
 docker compose up --build
@@ -160,7 +161,7 @@ pytest
 
 # Run specific app tests
 pytest apps/notes/tests/
-pytest apps/tasks/test_tasks.py
+pytest apps/tasks/tests/test_tasks.py
 
 # With coverage
 pytest --cov=apps
@@ -169,7 +170,7 @@ pytest --cov=apps
 ## Useful URLs
 
 - **Django Admin**: http://localhost:8000/admin/
-- **Notes API**: http://localhost:8000/api/notes/
+- **Notes API**: http://localhost:8000/api/v1/notes/
 - **Home**: http://localhost:8000/
 
 ## Notes
